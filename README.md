@@ -20,7 +20,7 @@ The pump geometry was obtained from an existing SimScale community project and u
 ## 3. Software and Physical Models
 
 | Parameter       | Specification |
-
+|-----------------|---------------|
 | CFD platform    | SimScale |
 | Working fluid   | Water |
 | Flow assumption | Incompressible |
@@ -36,6 +36,7 @@ The pump geometry was obtained from an existing SimScale community project and u
 The model uses a centrifugal pump geometry consisting of an impeller region and surrounding volute passage.
 
 | Boundary              | Condition |
+|-----------------------|-----------|
 | Inlet                 | Volumetric flow rate |
 | Inlet flow rate       | 8.5 × 10⁻³ m³/s (8.5 L/s) |
 | Outlet                | Pressure outlet |
