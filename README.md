@@ -2,50 +2,84 @@
 
 ## 1. Project Overview
 
-This project explores internal flow behavior in a centrifugal pump geometry using Computational Fluid Dynamics (CFD) in SimScale. The study focuses on pressure distribution, velocity magnitude, computational mesh characteristics, and numerical solution behavior.
+This project presents a Computational Fluid Dynamics (CFD) study of internal flow through a centrifugal pump geometry using SimScale.
 
-The project provides practical experience with CFD preprocessing, boundary-condition specification, turbulence modeling, mesh generation, post-processing, and convergence assessment.
+The study investigates the velocity and pressure fields within the pump geometry and examines the computational mesh and numerical behavior of the solution.
 
-The pump geometry was obtained from an existing SimScale community project and used as the starting point for this study. The geometry source is acknowledged below, and the simulation setup and analysis are described according to my actual contributions.
+The simulation workflow included geometry preparation, boundary-condition specification, turbulence modeling, mesh generation, numerical setup, simulation execution, and post-processing.
+
+The pump geometry was obtained from an existing SimScale community project and used as the starting point for this study. The original geometry source is acknowledged in this repository. The simulation setup, post-processing, and interpretation documented here reflect the work performed for this study.
+
+> **Important:** The model does not include a rotating reference frame or rotating region for the impeller. Therefore, the results should be interpreted as an investigation of the computed internal flow field rather than a validated prediction of centrifugal-pump performance.
+
+---
 
 ## 2. Project Objectives
 
-- Visualize pressure and velocity distributions within the pump geometry.
-- Examine the flow path through the impeller and volute passages.
-- Explore the application of turbulence modeling to internal fluid flow.
-- Review mesh characteristics and numerical solution behavior.
-- Assess solver residuals and monitored quantities.
-- Identify modeling limitations and potential improvements.
+The main objectives of this study were to:
 
-## 3. Software and Physical Models
+- Investigate velocity distribution within the pump geometry.
+- Examine pressure distribution throughout the computational domain.
+- Visualize internal flow behavior through the pump passages.
+- Apply the k–ω SST turbulence model to an internal-flow problem.
+- Generate and examine a computational mesh.
+- Analyze solver residuals and numerical solution behavior.
+- Identify limitations of the current modeling approach.
+- Develop practical experience in CFD simulation and post-processing using SimScale.
 
-| Parameter       | Specification |
-|-----------------|---------------|
-| CFD platform    | SimScale |
-| Working fluid   | Water |
-| Flow assumption | Incompressible |
-| Turbulence model| k-ω SST |
-| Analysis type   | Configured as steady-state; time-based controls are also present and should be verified |
-| Rotating region | Not configured |
-| Mesh identifier | Mesh 14 |
-| Number of cells | Approximately 1.6 million |
-| Number of nodes | Approximately 487,200 |
+---
+
+## 3. Simulation Setup
+
+| Parameter | Specification |
+|---|---|
+| **CFD Platform** | SimScale |
+| **Working Fluid** | Water |
+| **Flow Assumption** | Incompressible |
+| **Turbulence Model** | k–ω SST |
+| **Analysis Approach** | Steady-state |
+| **Rotating Region** | Not configured |
+| **Mesh Identifier** | Mesh 14 |
+| **Number of Cells** | Approximately 1.6 million |
+| **Number of Nodes** | Approximately 487,200 |
+| **Inlet Flow Rate** | 8.5 × 10⁻³ m³/s |
+| **Outlet Gauge Pressure** | 0 Pa |
+
+The model was configured to investigate incompressible turbulent flow through the pump geometry.
+
+---
 
 ## 4. Geometry and Boundary Conditions
 
-The model uses a centrifugal pump geometry consisting of an impeller region and surrounding volute passage.
+The computational model uses a centrifugal-pump geometry containing internal passages associated with the impeller and volute.
 
-| Boundary              | Condition |
-|-----------------------|-----------|
-| Inlet                 | Volumetric flow rate |
-| Inlet flow rate       | 8.5 × 10⁻³ m³/s (8.5 L/s) |
-| Outlet                | Pressure outlet |
-| Outlet gauge pressure | 0 Pa |
-| Solid surfaces        | Wall |
+### Boundary Conditions
 
-The inlet flow rate and outlet pressure are specified in the SimScale boundary-condition settings.
+| Boundary | Condition |
+|---|---|
+| **Inlet** | Volumetric flow rate |
+| **Inlet Flow Rate** | 8.5 × 10⁻³ m³/s (8.5 L/s) |
+| **Outlet** | Pressure outlet |
+| **Outlet Gauge Pressure** | 0 Pa |
+| **Solid Surfaces** | Wall |
 
-A gauge pressure of 0 Pa represents pressure relative to the selected pressure reference, rather than zero absolute pressure.
+The inlet flow rate was specified as:
+
+\[
+Q = 8.5 \times 10^{-3}\;m^3/s
+\]
+
+which corresponds to:
+
+\[
+Q = 8.5\;L/s
+\]
+
+The outlet gauge pressure was set to **0 Pa**.
+
+A gauge pressure of 0 Pa represents pressure relative to the selected reference pressure and does not mean that the absolute pressure is zero.
+
+---
 
 ## 5. Mesh Generation
 
@@ -53,114 +87,231 @@ The computational mesh was generated using the SimScale meshing workflow.
 
 ### Recorded Mesh Settings
 
-- **Mesh:** Mesh 14
-- **Cells:** Approximately 1.6 million
-- **Nodes:** Approximately 487,200
-- **Meshing algorithm:** Standard
-- **Sizing:** Automatic
-- **Fineness:** 5
-- **Curvature:** Automatic
-- **Physics-based meshing:** Enabled
-- **Hex element core:** Enabled
-- **Automatic boundary layers:** Disabled
-- **Automatic extrusion meshing:** Disabled
+| Mesh Parameter | Setting |
+|---|---|
+| **Mesh** | Mesh 14 |
+| **Cells** | Approximately 1.6 million |
+| **Nodes** | Approximately 487,200 |
+| **Meshing Algorithm** | Standard |
+| **Sizing** | Automatic |
+| **Fineness** | 5 |
+| **Curvature** | Automatic |
+| **Physics-Based Meshing** | Enabled |
+| **Hex Element Core** | Enabled |
+| **Automatic Boundary Layers** | Disabled |
+| **Automatic Extrusion Meshing** | Disabled |
 
-The mesh visualization is included to illustrate the discretization of the pump geometry.
+### Mesh Visualization
 
-[Computational mesh](images/mesh.png)
+![Computational mesh](images/mesh.png)
 
-**Mesh assessment:** The cell and node counts describe the mesh size but do not establish mesh quality or mesh independence. Further work could include local mesh inspection, quality checks, and a mesh-sensitivity study.
+The mesh provides the spatial discretization required to solve the governing flow equations.
+
+The approximately 1.6 million-cell mesh provides a relatively detailed computational representation of the geometry. However, cell count alone does not establish mesh quality or mesh independence.
+
+A more rigorous assessment would include mesh-quality metrics and comparison of key results across different mesh resolutions.
+
+---
 
 ## 6. Numerical Setup
 
-The recorded numerical settings include:
+The recorded numerical settings included:
 
-- Manual relaxation type.
-- Pressure reference value of 0 Pa.
-- Absolute residual tolerance of 10⁻⁶ for velocity, pressure, turbulent kinetic energy (k), and specific dissipation rate (ω).
-- Potential flow initialization enabled.
-- End time set to 1000 s.
-- Time step set to 1 s.
-- Write control set to time step, with a write interval of 1000.
+| Parameter | Setting |
+|---|---|
+| **Relaxation Type** | Manual |
+| **Pressure Reference Cell** | 0 |
+| **Pressure Reference Value** | 0 Pa |
+| **Absolute Tolerance — Velocity** | 1 × 10⁻⁶ |
+| **Absolute Tolerance — Pressure** | 1 × 10⁻⁶ |
+| **Absolute Tolerance — k** | 1 × 10⁻⁶ |
+| **Absolute Tolerance — ω** | 1 × 10⁻⁶ |
+| **Potential Flow Initialization** | Enabled |
+| **End Time** | 1,000 s |
+| **Time Step** | 1 s |
+| **Write Control** | Time step |
+| **Write Interval** | 1,000 |
+| **Decomposition** | Scotch |
 
-The run completed successfully according to the SimScale event log, with a reported runtime of approximately 23 minutes and 3.09 core-hours.
+The simulation completed successfully according to the SimScale event log, with a reported runtime of approximately **23 minutes** and **3.09 core-hours**.
 
-**Important:** The time-based controls and residual histories should be interpreted in the context of the actual solver configuration. The configured residual tolerances are not the same as the residual values achieved during the run.
+The specified residual tolerances represent the solver's convergence criteria; they should not be interpreted as the residual values actually achieved during the simulation.
 
-## 7. Results and Visualization
+---
+
+## 7. Results and Post-Processing
 
 ### 7.1 Velocity Magnitude
 
-[Velocity magnitude contour](images/velocity-magnitude.png)
+![Velocity magnitude](images/velocity-magnitude.png)
 
-The velocity-magnitude contour illustrates the spatial variation in flow speed through the modeled pump geometry. It can be used to identify regions of relatively higher and lower velocity and to explore the non-uniformity of the internal flow.
+The velocity-magnitude contour illustrates the spatial distribution of flow speed throughout the modeled pump geometry.
+
+The contour can be used to identify:
+
+- Regions of relatively high velocity.
+- Regions of lower velocity.
+- Changes in flow speed through the internal passages.
+- Non-uniformity in the computed flow field.
+- Regions that may warrant further investigation for recirculation or flow separation.
+
+Because no rotating region was configured, the velocity field should not be interpreted as a complete representation of the energy transfer normally produced by a rotating centrifugal-pump impeller.
+
+---
 
 ### 7.2 Pressure Distribution
 
-[Pressure contour](images/pressure-contour.png)
+![Pressure distribution](images/pressure-contour.png)
 
 The pressure contour illustrates the computed pressure field throughout the modeled geometry.
 
-The interpretation of pressure levels depends on the selected pressure variable and reference. Quantitative conclusions about pressure rise attributable to pump operation require an appropriate representation of impeller rotation.
+The pressure distribution can be used to examine spatial pressure variations within the computational domain.
+
+However, quantitative prediction of pump pressure rise or pump head requires an appropriate representation of impeller rotation and a suitable definition of inlet and outlet performance quantities.
+
+---
 
 ### 7.3 Computational Mesh
 
-[Mesh visualization](images/mesh.png)
+![Mesh visualization](images/mesh.png)
 
-The mesh visualization shows how the computational domain is discretized. Mesh resolution and quality are important for representing curved passages and local flow gradients.
+The mesh visualization shows the discretization of the computational domain.
+
+The mesh must adequately resolve curved passages, regions of high velocity gradients, and near-wall flow behavior for reliable CFD predictions.
+
+---
 
 ### 7.4 Solver Residuals
 
-[Solver residuals](images/residuals.png)
+![Solver residuals](images/residuals.png)
 
-The residual history shows an overall decrease in the monitored velocity components and turbulence variables during the run. The pressure residual remains comparatively higher, at approximately the 10⁻² level near the end of the plotted interval.
+The residual history shows an overall reduction in several monitored variables during the simulation.
 
-Although the residuals decrease, the plot does not show that all variables reached the configured absolute tolerance of 10⁻⁶. Therefore, the residual history alone does not establish complete numerical convergence.
+The velocity and turbulence-variable residuals decrease toward the later stages of the run, while the pressure residual remains comparatively higher, at approximately the \(10^{-2}\) level near the end of the plotted interval.
+
+Although the residuals decrease, not all variables reach the configured absolute tolerance of \(10^{-6}\).
+
+Therefore, the residual history indicates an overall reduction in numerical error but does not, by itself, demonstrate complete numerical convergence.
+
+Additional assessment using monitored engineering quantities and conservation checks would provide a stronger basis for evaluating convergence.
+
+---
 
 ## 8. Engineering Discussion
 
-The pressure and velocity contours provide a basis for examining internal flow behavior within the pump geometry. The mesh and solver histories provide additional information about the numerical representation and evolution of the solution.
+The pressure and velocity contours provide qualitative insight into the internal flow behavior of the modeled centrifugal-pump geometry.
 
-The residual history shows an overall reduction in several variables, but the remaining pressure residual and oscillations in the monitored quantities warrant further investigation before steady-state convergence can be confirmed.
+The velocity field illustrates spatial variations in flow speed, while the pressure field provides information about the distribution of pressure throughout the computational domain.
 
-### Rotating Impeller Limitation
+The mesh and residual histories provide additional information about the numerical representation and behavior of the simulation.
 
-No rotating region or rotating reference frame was configured in this model. A centrifugal pump normally transfers energy to the fluid through its rotating impeller. Without an appropriate representation of this rotation, the current model does not fully represent the pump's energy-transfer mechanism.
+The results are particularly useful for developing practical understanding of:
 
-Consequently, the results should be interpreted as flow-field observations within the modeled geometry rather than validated predictions of pump head, efficiency, or operating performance.
+- Internal turbulent flow.
+- CFD preprocessing and meshing.
+- Pressure and velocity post-processing.
+- Residual behavior.
+- Numerical convergence assessment.
+- Limitations associated with simplified pump modeling.
 
-## 9. Limitations and Future Work
+---
 
-Potential improvements include:
+## 9. Rotating Impeller Limitation
 
-- Configuring an appropriate rotating-impeller model.
-- Verifying the solver type and its time-stepping or iteration settings.
-- Examining solver termination criteria and convergence diagnostics.
-- Identifying the variables represented in the monitored-quantity plot.
-- Checking mass conservation and the stability of relevant flow quantities.
-- Performing mesh-quality checks and a mesh-sensitivity study.
-- Comparing validated predictions against pump theory, experimental data, or published reference results.
-- Investigating streamlines and additional flow-field visualizations.
+A centrifugal pump transfers mechanical energy to the fluid through the rotation of its impeller.
 
-## 10. Geometry Acknowledgment
+In this simulation, **no rotating region or rotating reference frame was configured**.
 
-The pump geometry was obtained from an existing SimScale community project.
+As a result, the current model does not explicitly represent the rotational energy transfer from the impeller to the fluid.
 
-The original geometry is acknowledged here. Any additional reused components, such as the mesh, boundary conditions, solver configuration, or results, should also be identified if applicable.
+Therefore, the simulation should **not** be used to claim validated values of:
 
-## 11. Simulation Link
+- Pump head
+- Pump efficiency
+- Shaft power
+- Torque
+- Pump performance curves
+- Actual pressure rise generated by the rotating impeller
 
-**SimScale project:** [https://www.simscale.com/projects/mehwish_akhtar/centrifugal_pump-coursera-_-_copy_258705908/]
+Instead, the current study should be presented as a **CFD investigation of the internal flow and pressure/velocity fields within the modeled pump geometry**.
+
+A more complete centrifugal-pump analysis would require an appropriate rotating-machinery modeling approach and validation against pump-performance data.
+
+---
+
+## 10. Limitations and Future Work
+
+The main limitations of the current study are related to the simplified representation of the rotating machinery and the available validation data.
+
+Future work could include:
+
+1. **Implement rotating machinery modeling**  
+   Introduce an appropriate rotating region or rotating reference frame for the impeller.
+
+2. **Perform mesh-independence testing**  
+   Compare key flow quantities using coarse, medium, and fine meshes.
+
+3. **Evaluate mesh quality**  
+   Examine skewness, non-orthogonality, aspect ratio, and near-wall resolution where available.
+
+4. **Perform a detailed convergence assessment**  
+   Evaluate residuals together with monitored flow quantities, pressure differences, and mass conservation.
+
+5. **Investigate flow structures**  
+   Use streamlines and additional velocity visualizations to examine recirculation, separation, and flow development.
+
+6. **Calculate pump performance parameters**  
+   After implementing appropriate rotating machinery physics, calculate pump head, pressure rise, hydraulic power, and efficiency.
+
+7. **Validate the CFD model**  
+   Compare numerical predictions with experimental data, manufacturer pump curves, analytical calculations, or published reference data.
+
+---
+
+## 11. Geometry Acknowledgment
+
+The centrifugal-pump geometry used in this study was obtained from an existing SimScale community project and was used as the starting geometry for the simulation.
+
+The original geometry source is acknowledged to distinguish the geometry from the simulation work performed in this study.
+
+If any additional elements of the original project were reused, such as the mesh, boundary conditions, solver settings, or simulation results, these should be identified separately.
+
+---
 
 ## 12. Skills Demonstrated
 
 - Computational Fluid Dynamics (CFD)
 - SimScale
-- Internal fluid-flow analysis
-- Turbulence modeling
-- Boundary-condition specification
-- Computational meshing
-- Pressure and velocity post-processing
+- Internal turbulent-flow analysis
+- k–ω SST turbulence modeling
+- CFD boundary-condition specification
+- Computational mesh generation
+- Pressure-field visualization
+- Velocity-field visualization
+- CFD post-processing
 - Solver residual interpretation
 - Numerical convergence assessment
+- Identification of CFD modeling limitations
+- Engineering interpretation of simulation results
+
+---
+
+## 13. Simulation Project
+
+**SimScale Project:**  
+https://www.simscale.com/projects/mehwish_akhtar/centrifugal_pump-coursera-_-_copy_258705908/
+
+---
+
+## 14. Conclusion
+
+This project demonstrates the application of CFD to investigate internal flow behavior within a centrifugal-pump geometry using SimScale.
+
+The study involved geometry preparation, boundary-condition specification, turbulence modeling, mesh generation, numerical setup, simulation execution, and post-processing.
+
+The resulting pressure and velocity fields provide qualitative insight into the flow behavior within the modeled pump geometry. The residual history also provides an opportunity to assess the numerical behavior of the solution.
+
+A key limitation is that the current model does not include an explicit rotating region for the impeller. Consequently, the results are not presented as validated predictions of centrifugal-pump performance.
+
+Future development of the model with appropriate rotating-machinery physics, mesh-independence testing, convergence assessment, and validation against reference pump data would allow a more quantitative investigation of pump performance.
 
